@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,11 +14,14 @@ namespace Contractify_API.Models
         private readonly MongoHelper<Company> _company;
 
         [BsonId]
-        public ObjectId CompanyId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string CompanyId { get; set; }
 
         public string FirstName { get; set; }
 
         public string  LastName { get; set; }
+
+        public string CompanyName { get; set; }
 
         [Required]
         public string Email { get; set; }
@@ -50,7 +54,8 @@ namespace Contractify_API.Models
 
         public bool IsUserExist(string email)
         {
-            var company = _company.Collection.FindAll().Where(x => x.Email == email).SingleOrDefault();
+            var query = Query<Company>.EQ(x => x.Email, email);
+            var company = _company.Collection.FindOne(query);
 
             if (company != null)
             {
@@ -62,8 +67,48 @@ namespace Contractify_API.Models
 
         public Company ValidateLogin(Company company)
         {
-            return _company.Collection.FindAll().Where(x => x.Email == company.Email && x.Password == company.Password).SingleOrDefault();
+            var query = Query.And(
+                Query<Company>.EQ(x => x.Email, company.Email),
+                Query<Company>.EQ(x => x.Password, company.Password)
+                );
+            return _company.Collection.FindOne(query);
         }
 
+        public Company GetCompanyById(string id)
+        {
+            var query = Query<Company>.EQ(x => x.CompanyId, id);
+            return _company.Collection.FindOne(query);
+        }
+
+        public bool UpdateCompany(Company newCompany)
+        {
+            bool isUpdated = false;
+            var query = Query<Company>.EQ(x => x.CompanyId, newCompany.CompanyId);
+            Company oldCompany = GetCompanyById(newCompany.CompanyId.ToString());
+
+            if (string.IsNullOrEmpty(newCompany.Password))
+            {
+                newCompany.Password = oldCompany.Password;
+            }
+            Company company = new Company
+            {
+                CompanyId = newCompany.CompanyId,
+                FirstName = newCompany.FirstName,
+                LastName = newCompany.LastName,
+                CompanyName = newCompany.CompanyName,
+                Email = newCompany.Email,
+                Password = newCompany.Password
+            };
+
+            var replacement = Update<Company>.Replace(company);
+            var result = _company.Collection.Update(query, replacement);
+
+            if(result.DocumentsAffected > 0)
+            {
+                isUpdated = true;
+            }
+
+            return isUpdated;
+        }
     }
 }

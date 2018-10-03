@@ -30,5 +30,21 @@ namespace Contractify_API.Controllers
             return Ok(validatedCompany);
 
         }
+
+        [Route("api/company/account/{id}")]
+        [HttpGet]
+        public IHttpActionResult Account(string id)
+        {
+            Company company = new Company();
+            return Ok(company.GetCompanyById(id));
+        }
+
+        [Route("api/company/update")]
+        [HttpPost]
+        public IHttpActionResult Update(Company company)
+        {
+            Company comp = new Company();
+            return Ok(comp.UpdateCompany(company));
+        }
     }
 }
