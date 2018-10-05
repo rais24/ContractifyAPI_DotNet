@@ -46,5 +46,13 @@ namespace Contractify_API.Controllers
             Company comp = new Company();
             return Ok(comp.UpdateCompany(company));
         }
+
+        [Route("api/company/updateLogo")]
+        [HttpPost]
+        public IHttpActionResult UpdateLogo(Company company)
+        {
+            Company comp = new Company();
+            return Ok(comp.UpdateCompanyLogo(company));
+        }
     }
 }

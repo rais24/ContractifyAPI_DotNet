@@ -100,14 +100,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\ContactPerson.cs" />
     <Compile Include="Models\ContractData.cs" />
-    <Compile Include="Models\ContractPromiseeDetails.cs" />
-    <Compile Include="Models\ContractPromiserData.cs" />
     <Compile Include="Models\ContractServiceAgreementDetails.cs" />
     <Compile Include="Models\ContractServiceAgreementPointsDetails.cs" />
     <Compile Include="Models\ContractServiceData.cs" />

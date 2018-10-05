@@ -16,16 +16,19 @@ namespace Contractify_API.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string CompanyId { get; set; }
-
         public string FirstName { get; set; }
-
         public string  LastName { get; set; }
-
         public string CompanyName { get; set; }
-
+        public string LegalEntityName { get; set; }
+        public string RegdLegalAddress { get; set; }
+        public string PrimaryPhoneNo { get; set; }
+        public string SecondaryPhoneNo { get; set; }
+        public string GSTIN { get; set; }
+        public string SecondaryContactName { get; set; }
         [Required]
         public string Email { get; set; }
-
+        public string OfficeAddress { get; set; }
+        public string Logo { get; set; }
         public string Password { get; set; }
 
 
@@ -96,7 +99,15 @@ namespace Contractify_API.Models
                 FirstName = newCompany.FirstName,
                 LastName = newCompany.LastName,
                 CompanyName = newCompany.CompanyName,
+                LegalEntityName = newCompany.LegalEntityName,
+                RegdLegalAddress = newCompany.RegdLegalAddress,
+                PrimaryPhoneNo = newCompany.PrimaryPhoneNo,
+                SecondaryPhoneNo = newCompany.SecondaryPhoneNo,
+                GSTIN = newCompany.GSTIN,
+                SecondaryContactName = newCompany.SecondaryContactName,
                 Email = newCompany.Email,
+                OfficeAddress = newCompany.OfficeAddress,
+                Logo = oldCompany.Logo,
                 Password = newCompany.Password
             };
 
@@ -108,6 +119,19 @@ namespace Contractify_API.Models
                 isUpdated = true;
             }
 
+            return isUpdated;
+        }
+
+        public bool UpdateCompanyLogo(Company newCompany)
+        {
+            bool isUpdated = false;
+            var query = Query<Company>.EQ(x => x.CompanyId, newCompany.CompanyId);
+            var set = Update<Company>.Set(x => x.Logo, newCompany.Logo);
+            var result = _company.Collection.Update(query, set);
+            if (result.DocumentsAffected > 0)
+            {
+                isUpdated = true;
+            }
             return isUpdated;
         }
     }
