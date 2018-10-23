@@ -124,10 +124,28 @@ namespace Contractify_API.Controllers
         }
 
         [HttpGet]
-        [Route("api/service/deleteservice/{serviceId}/{serviceType}")]
-        public IHttpActionResult DeleteService(string serviceId,string serviceType)
+        [Route("api/service/deleteservice/{companyId}/{serviceId}/{serviceType}")]
+        public IHttpActionResult DeleteService(string companyId,string serviceId,string serviceType)
         {
-            return Ok();
+            ServiceMaster service = new ServiceMaster();
+
+            if (serviceType.Equals("master"))
+            {
+                return Ok(service.DeleteMasterService(companyId,serviceId));
+            }
+            else if (serviceType.Equals("sub"))
+            {
+                return Ok(service.DeleteSubService(companyId, serviceId));
+            }
+            else if (serviceType.Equals("ssub"))
+            {
+                return Ok(service.DeleteSubSubService(companyId, serviceId));
+            }
+            else
+            {
+                return Ok("false");
+            }
+           
         }
     }
 }

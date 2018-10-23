@@ -80,7 +80,7 @@ namespace Contractify_API.Models
         public List<ServiceMaster> GetAllMasterService(string companyId)
         {
             var query = Query.And(Query<ServiceMaster>.EQ(x => x.CompanyId, companyId),
-                Query<ServiceMaster>.EQ(x => x.ParentId,"0"));
+                                  Query<ServiceMaster>.EQ(x => x.ParentId,"0"));
             return _service.Collection.Find(query).ToList();
         }
 
@@ -136,8 +136,8 @@ namespace Contractify_API.Models
             bool isUpdated = false;
 
             var query = Query.And(Query<ServiceMaster>.EQ(x => x.CompanyId, service.CompanyId),
-                Query<ServiceMaster>.EQ(x => x.ServiceId, service.ServiceId),
-                Query<ServiceMaster>.EQ(x => x.ParentId, service.ParentId));
+                                  Query<ServiceMaster>.EQ(x => x.ServiceId, service.ServiceId),
+                                  Query<ServiceMaster>.EQ(x => x.ParentId, service.ParentId));
 
             var replacement = Update<ServiceMaster>.Replace(service);
             var result = _service.Collection.Update(query, replacement);
@@ -148,6 +148,89 @@ namespace Contractify_API.Models
             }
 
             return isUpdated;
+
+        }
+
+        public bool DeleteSubSubService(string companyId,string serviceId)
+        {
+            bool isDeleted = false;
+            var query = Query.And(Query<ServiceMaster>.EQ(x => x.ServiceId, serviceId),
+                                  Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+            var result = _service.Collection.Remove(query);
+
+            if (result.DocumentsAffected > 0)
+            {
+                isDeleted = true;
+            }
+            return isDeleted;
+
+        }
+
+        public bool DeleteSubService(string companyId,string serviceId)
+        {
+            bool isDeleted = false;
+            try
+            {
+                // query for sub sub services of related sub service
+                var ssubQuery = Query.And(Query<ServiceMaster>.EQ(x => x.ParentId, serviceId),
+                                          Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+                // query for sub service
+                var query = Query.And(Query<ServiceMaster>.EQ(x => x.ServiceId, serviceId),
+                                      Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+                _service.Collection.Remove(ssubQuery);
+
+                var result = _service.Collection.Remove(query);
+                if (result.DocumentsAffected > 0)
+                {
+                    isDeleted = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                string msg = ex.Message;
+            }
+            return isDeleted;
+        }
+
+        public bool DeleteMasterService(string companyId,string serviceId)
+        {
+            bool isDeleted = false;
+
+            // query for sub service list from master service id
+            var subQuery = Query.And(Query<ServiceMaster>.EQ(x => x.ParentId, serviceId),
+                                     Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+            List<ServiceMaster> subServiceList = _service.Collection.Find(subQuery).ToList();
+
+            foreach(ServiceMaster service in subServiceList)
+            {
+                // query for sub sub service from sub service id
+                var ssubQuery = Query.And(Query<ServiceMaster>.EQ(x => x.ParentId, service.ServiceId),
+                                          Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+                // query for sub service id on service id
+                var sQuery = Query.And(Query<ServiceMaster>.EQ(x => x.ServiceId, service.ServiceId),
+                                          Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+                _service.Collection.Remove(ssubQuery);
+                _service.Collection.Remove(sQuery);
+            }
+
+            // query for master service on service id
+            var query = Query.And(Query<ServiceMaster>.EQ(x => x.ServiceId, serviceId),
+                                     Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
+
+            var result = _service.Collection.Remove(query);
+
+            if(result.DocumentsAffected > 0)
+            {
+                isDeleted = true;
+            }
+
+            return isDeleted;
         }
 
     }
