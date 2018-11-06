@@ -27,6 +27,8 @@ namespace Contractify_API.Models
         public string OfficeAddress { get; set; }
         public string PaymentTerm { get; set; }
         public string Logo { get; set; }
+        public string CreatedDate { get; set; }
+        public string UpdatedDate { get; set; }
         public List<ContactPerson> ContactPersons { get; set; }
 
         public Client()
@@ -36,24 +38,18 @@ namespace Contractify_API.Models
 
         public string Create(Client client)
         {
-            try
+            if (!IsClientExist(client.Email))
             {
-                if (!IsClientExist(client.Email))
-                {
-                    _client.Collection.Save(client);
-                    return "Company Created";
-                }
-                else
-                {
-                    return "Company Already Exists";
-                }
+                _client.Collection.Save(client);
+                return "Company Created";
             }
-            catch
+            else
             {
-                return "Some error encountered";
+                return "Company Already Exists";
             }
         }
 
+    
         public bool IsClientExist(string email)
         {
             var query = Query<Client>.EQ(x => x.Email, email);
@@ -112,7 +108,9 @@ namespace Contractify_API.Models
                 OfficeAddress = client.OfficeAddress,
                 Logo = oldClient.Logo,
                 PaymentTerm = client.PaymentTerm,
-                ContactPersons = oldClient.ContactPersons
+                ContactPersons = oldClient.ContactPersons,
+                CreatedDate = oldClient.CreatedDate,
+                UpdatedDate = System.DateTime.UtcNow.ToString()
             };
 
             var replacement = Update<Client>.Replace(company);
@@ -163,6 +161,17 @@ namespace Contractify_API.Models
                 isUpdated = true;
             }
             return isUpdated;
+        }
+
+        public List<ContactPerson> GetClientContactPersons(string id)
+        {
+            List<ContactPerson> contacts = new List<ContactPerson>();
+
+            Client client = new Client();
+            client = GetClientById(id);
+            contacts = client.ContactPersons;
+            return contacts;
+
         }
     }
 }

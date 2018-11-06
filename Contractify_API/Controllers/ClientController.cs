@@ -65,5 +65,12 @@ namespace Contractify_API.Controllers
             Client nClient = new Client();
             return Ok(nClient.UpdateClientLogo(client));
         }
+
+        [Route("api/client/getclientcontact/{id}")]
+        public IHttpActionResult GetClientContact(string id)
+        {
+            Client nClient = new Client();
+            return Ok(nClient.GetClientContactPersons(id));
+        }
     }
 }

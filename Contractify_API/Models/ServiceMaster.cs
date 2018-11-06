@@ -92,22 +92,16 @@ namespace Contractify_API.Models
 
         public string CreateSubService(ServiceMaster service)
         {
-            try
+            if (!IsSubServiceExist(service.Name, service.ParentId))
             {
-                if (!IsSubServiceExist(service.Name,service.ParentId))
-                {
-                    _service.Collection.Save(service);
-                    return "Service Created";
-                }
-                else
-                {
-                    return "Service Already Exists";
-                }
+                _service.Collection.Save(service);
+                return "Service Created";
             }
-            catch
+            else
             {
-                return "Some Error Encountered";
+                return "Service Already Exists";
             }
+
         }
 
         public bool IsSubServiceExist(string serviceName,string parentId)
@@ -167,31 +161,27 @@ namespace Contractify_API.Models
 
         }
 
-        public bool DeleteSubService(string companyId,string serviceId)
+        public bool DeleteSubService(string companyId, string serviceId)
         {
             bool isDeleted = false;
-            try
-            {
-                // query for sub sub services of related sub service
-                var ssubQuery = Query.And(Query<ServiceMaster>.EQ(x => x.ParentId, serviceId),
-                                          Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
 
-                // query for sub service
-                var query = Query.And(Query<ServiceMaster>.EQ(x => x.ServiceId, serviceId),
+            // query for sub sub services of related sub service
+            var ssubQuery = Query.And(Query<ServiceMaster>.EQ(x => x.ParentId, serviceId),
                                       Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
 
-                _service.Collection.Remove(ssubQuery);
+            // query for sub service
+            var query = Query.And(Query<ServiceMaster>.EQ(x => x.ServiceId, serviceId),
+                                  Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
 
-                var result = _service.Collection.Remove(query);
-                if (result.DocumentsAffected > 0)
-                {
-                    isDeleted = true;
-                }
-            }
-            catch(Exception ex)
+            _service.Collection.Remove(ssubQuery);
+
+            var result = _service.Collection.Remove(query);
+            if (result.DocumentsAffected > 0)
             {
-                string msg = ex.Message;
+                isDeleted = true;
             }
+
+
             return isDeleted;
         }
 
