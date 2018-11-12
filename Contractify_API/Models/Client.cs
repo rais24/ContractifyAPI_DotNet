@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,6 +41,7 @@ namespace Contractify_API.Models
         {
             if (!IsClientExist(client.Email))
             {
+                client.CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
                 _client.Collection.Save(client);
                 return "Company Created";
             }
@@ -110,7 +112,7 @@ namespace Contractify_API.Models
                 PaymentTerm = client.PaymentTerm,
                 ContactPersons = oldClient.ContactPersons,
                 CreatedDate = oldClient.CreatedDate,
-                UpdatedDate = System.DateTime.UtcNow.ToString()
+                UpdatedDate = System.DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")
             };
 
             var replacement = Update<Client>.Replace(company);
@@ -173,5 +175,6 @@ namespace Contractify_API.Models
             return contacts;
 
         }
+
     }
 }

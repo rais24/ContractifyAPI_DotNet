@@ -14,45 +14,35 @@ namespace Contractify_API.Controllers
         [HttpPost]
         public IHttpActionResult Register(Company company)
         {
-            Company newCompany = new Company();
-            string msg = newCompany.Create(company);
-
-            return Ok(msg);
+            return Ok(new Company().Create(company));
         }
 
         [Route("api/company/login")]
         [HttpPost]
         public IHttpActionResult Login(Company company)
         {
-            Company validatedCompany = new Company();
-            validatedCompany = validatedCompany.ValidateLogin(company);
-
-            return Ok(validatedCompany);
-
+            return Ok(new Company().ValidateLogin(company));
         }
 
         [Route("api/company/account/{id}")]
         [HttpGet]
         public IHttpActionResult Account(string id)
         {
-            Company company = new Company();
-            return Ok(company.GetCompanyById(id));
+            return Ok(new Company().GetCompanyById(id));
         }
 
         [Route("api/company/update")]
         [HttpPost]
         public IHttpActionResult Update(Company company)
         {
-            Company comp = new Company();
-            return Ok(comp.UpdateCompany(company));
+            return Ok(new Company().UpdateCompany(company));
         }
 
         [Route("api/company/updateLogo")]
         [HttpPost]
         public IHttpActionResult UpdateLogo(Company company)
         {
-            Company comp = new Company();
-            return Ok(comp.UpdateCompanyLogo(company));
+            return Ok(new Company().UpdateCompanyLogo(company));
         }
     }
 }

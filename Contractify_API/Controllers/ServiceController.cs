@@ -16,24 +16,21 @@ namespace Contractify_API.Controllers
         [HttpPost]
         public IHttpActionResult CreateMasterService(ServiceMaster service)
         {
-            ServiceMaster nService = new ServiceMaster();
-            return Ok(nService.CreateService(service));
+            return Ok(new ServiceMaster().CreateService(service));
         }
 
         [HttpGet]
         [Route("api/service/getmasterservice/{companyId}")]
         public IHttpActionResult GetAllMasterService(string companyId)
         {
-            ServiceMaster nService = new ServiceMaster();
-            return Ok(nService.GetAllMasterService(companyId));
+            return Ok(new ServiceMaster().GetAllMasterService(companyId));
         }
 
         [HttpGet]
         [Route("api/service/getsubservice/{serviceId}")]
         public IHttpActionResult GetSubServicesByParentId(string serviceId)
         {
-            ServiceMaster subService = new ServiceMaster();
-            return Ok(subService.GetSubServices(serviceId));
+            return Ok(new ServiceMaster().GetSubServices(serviceId));
         }
 
         [HttpPost]
@@ -111,16 +108,14 @@ namespace Contractify_API.Controllers
         [Route("api/service/getallservice/{companyId}")]
         public IHttpActionResult GetAllService(string companyId)
         {
-            ServiceMaster service = new ServiceMaster();
-            return Ok(service.GetAllService(companyId));
+            return Ok(new ServiceMaster().GetAllService(companyId));
         }
 
         [HttpPost]
         [Route("api/service/updateservice")]
         public IHttpActionResult UpdateService(ServiceMaster service)
         {
-            ServiceMaster nService = new ServiceMaster();
-            return Ok(nService.UpdateService(service));
+            return Ok(new ServiceMaster().UpdateService(service));
         }
 
         [HttpGet]

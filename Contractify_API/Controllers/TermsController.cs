@@ -14,32 +14,28 @@ namespace Contractify_API.Controllers
         [Route("api/terms/getTerms/{id}")]
         public IHttpActionResult GetTerms(string id)
         {
-            Terms nterm = new Terms();
-            return Ok(nterm.GetTerms(id));
+            return Ok(new Terms().GetTerms(id));
         }
 
         [HttpPost]
         [Route("api/terms/create")]
         public IHttpActionResult Create(Terms term)
         {
-            Terms nterm = new Terms();
-            return Ok(nterm.Create(term));
+            return Ok(new Terms().Create(term));
         }
 
         [HttpPost]
         [Route("api/terms/update")]
         public IHttpActionResult Update(Terms term)
         {
-            Terms nterm = new Terms();
-            return Ok(nterm.Update(term));
+            return Ok(new Terms().Update(term));
         }
 
         [HttpPost]
         [Route("api/terms/delete")]
         public IHttpActionResult Delete(Terms term)
         {
-            Terms nterm = new Terms();
-            return Ok(nterm.Delete(term.Id));
+            return Ok(new Terms().Delete(term.Id));
         }
     }
 }
