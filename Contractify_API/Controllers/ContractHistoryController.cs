@@ -14,7 +14,7 @@ namespace Contractify_API.Controllers
         [Route("api/contracthistory/{memberId}")]
         public IHttpActionResult GetAllHistory(string memberId )
         {
-            return Ok(new ContractHistory().GetContractHistory(memberId));
+           return Ok(new ContractHistory().GetContractHistory(memberId));
         }
 
         [HttpGet]

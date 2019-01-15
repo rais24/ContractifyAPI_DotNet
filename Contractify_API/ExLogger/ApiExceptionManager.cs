@@ -27,9 +27,9 @@ namespace Contractify_API.ExLogger
         {
             _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
            // _logger.Error(context.Exception.ToString() + Environment.NewLine);
-            _logger.Error(Environment.NewLine + " Excetion Time: " + System.DateTime.Now + Environment.NewLine
+            _logger.Error(Environment.NewLine + " Exception Time: " + System.DateTime.Now + Environment.NewLine
                 + " Exception Message: " + context.Exception.Message.ToString() + Environment.NewLine
-                + " Exception File Path: " + context.ExceptionContext.ControllerContext.Controller.ToString() + "/" + context.ExceptionContext.ControllerContext.RouteData.Values["action"] + Environment.NewLine);
+                + " Exception File Path: " + context.ExceptionContext.ControllerContext.RouteData.Route.RouteTemplate + "/" + context.ExceptionContext.ControllerContext.RouteData.Values.FirstOrDefault() + Environment.NewLine);
         }
         public void Log(string ex)
         {

@@ -20,6 +20,7 @@ namespace Contractify_API.Models
         public string ClientId { get; set; }
         public string CompanyName { get; set; }
         public string ContactPerson { get; set; }
+        public string ContactEmail { get; set; }
         public string ContractName { get; set; }
         public string ContractType { get; set; } // digital marketing, technical, both
         public string ContractStartDate { get; set; }
@@ -40,7 +41,23 @@ namespace Contractify_API.Models
         {
             bool isAdded = false;
             Client client = new Client().GetClientById(contract.ClientId);
+
+            if (!string.IsNullOrEmpty(contract.ContactPerson))
+            {
+                string[] cname = contract.ContactPerson.Split(null);
+
+                if (cname.Count() > 1)
+                {
+                    contract.ContactEmail = client.ContactPersons.Where(x => (x.FirstName.Contains(cname[0]) && x.LastName.Contains(cname[1]))).Select(x => x.Email).FirstOrDefault();
+                }
+                else if(cname.Count() == 1)
+                {
+                    contract.ContactEmail = client.ContactPersons.Where(x => x.FirstName.Contains(cname[0])).Select(x => x.Email).FirstOrDefault();
+                }
+            }
+           
             contract.CompanyName = client.CompanyName;
+           
             contract.CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
             var result = _contract.Collection.Save(contract);
             string affected = result.LastErrorMessage;
@@ -64,7 +81,21 @@ namespace Contractify_API.Models
         public bool UpdateContract(Contract contract)
         {
             bool isUpdated = false;
+            Client client = new Client().GetClientById(contract.ClientId);
 
+            if (!string.IsNullOrEmpty(contract.ContactPerson))
+            {
+                string[] cname = contract.ContactPerson.Split(null);
+
+                if (cname.Count() > 1)
+                {
+                    contract.ContactEmail = client.ContactPersons.Where(x => (x.FirstName.Contains(cname[0]) && x.LastName.Contains(cname[1]))).Select(x => x.Email).FirstOrDefault();
+                }
+                else if (cname.Count() == 1)
+                {
+                    contract.ContactEmail = client.ContactPersons.Where(x => x.FirstName.Contains(cname[0])).Select(x => x.Email).FirstOrDefault();
+                }
+            }
             Contract oContract = GetContractById(contract.ContractId);
             contract.CreatedDate = oContract.CreatedDate;
             contract.UpdatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
@@ -157,6 +188,19 @@ namespace Contractify_API.Models
             }
 
             return isClosed;
+        }
+
+        public bool UpdateContractPdf(Contract contract)
+        {
+            bool isUpdated = false;
+            var query = Query<Contract>.EQ(x => x.ContractId, contract.ContractId);
+            var set = Update<Contract>.Set(x => x.ContractPdfPath, contract.ContractPdfPath);
+            var result = _contract.Collection.Update(query, set);
+            if(result.DocumentsAffected > 0)
+            {
+                isUpdated = true;
+            }
+            return isUpdated;
         }
         
     }

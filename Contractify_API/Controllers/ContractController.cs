@@ -46,9 +46,17 @@ namespace Contractify_API.Controllers
         }
 
         [HttpGet]
+        [Route("api/contract/close/{id}")]
         public IHttpActionResult CloseContract(string id)
         {
             return Ok(new Contract().CloseContract(id));
+        }
+
+        [HttpPost]
+        [Route("api/contract/contractpdf")]
+        public IHttpActionResult UpdateContractPdf(Contract contract)
+        {
+            return Ok(new Contract().UpdateContractPdf(contract));
         }
     }
 }
