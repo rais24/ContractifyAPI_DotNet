@@ -21,7 +21,7 @@ namespace Contractify_API.Models
         public string CompanyName { get; set; }
         public string ContactPerson { get; set; }
         public string ContactEmail { get; set; }
-        public string ContractName { get; set; }
+        public string ContractPeriod { get; set; }
         public string ContractType { get; set; } // digital marketing, technical, both
         public string ContractStartDate { get; set; }
         public string ContractEndDate { get; set; }
