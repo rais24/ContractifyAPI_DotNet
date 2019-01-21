@@ -172,6 +172,13 @@ namespace Contractify_API.Models
             Client client = new Client();
             client = GetClientById(id);
             contacts = client.ContactPersons;
+
+            ContactPerson companyOwner = new ContactPerson();
+            companyOwner.FirstName = client.FirstName;
+            companyOwner.LastName = client.LastName;
+            companyOwner.Email = client.Email;
+            contacts.Add(companyOwner);
+
             return contacts;
 
         }

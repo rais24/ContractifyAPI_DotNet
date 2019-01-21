@@ -49,10 +49,22 @@ namespace Contractify_API.Models
                 if (cname.Count() > 1)
                 {
                     contract.ContactEmail = client.ContactPersons.Where(x => (x.FirstName.Contains(cname[0]) && x.LastName.Contains(cname[1]))).Select(x => x.Email).FirstOrDefault();
+
+                    if (string.IsNullOrEmpty(contract.ContactEmail))
+                    {
+                        if (client.FirstName.Contains(cname[0]) && client.LastName.Contains(cname[1]))
+                            contract.ContactEmail = client.Email;
+                    }
                 }
                 else if(cname.Count() == 1)
                 {
                     contract.ContactEmail = client.ContactPersons.Where(x => x.FirstName.Contains(cname[0])).Select(x => x.Email).FirstOrDefault();
+
+                    if (string.IsNullOrEmpty(contract.ContactEmail))
+                    {
+                        if (client.FirstName.Contains(cname[0]))
+                            contract.ContactEmail = client.Email;
+                    }
                 }
             }
            
