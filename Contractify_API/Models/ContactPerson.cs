@@ -12,5 +12,7 @@ namespace Contractify_API.Models
         public string PrimaryPhoneNo { get; set; }
         public string SecondaryPhoneNo { get; set; }
         public string Email { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

@@ -17,13 +17,6 @@ namespace Contractify_API.Controllers
             return Ok(new Company().Create(company));
         }
 
-        [Route("api/company/login")]
-        [HttpPost]
-        public IHttpActionResult Login(Company company)
-        {
-            return Ok(new Company().ValidateLogin(company));
-        }
-
         [Route("api/company/account/{id}")]
         [HttpGet]
         public IHttpActionResult Account(string id)

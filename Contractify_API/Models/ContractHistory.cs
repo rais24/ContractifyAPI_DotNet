@@ -17,7 +17,7 @@ namespace Contractify_API.Models
         public string CompanyId { get; set; }
         public Contract Contract { get; set; }
         public string Action { get; set; }
-        public string CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public ContractHistory() { _history = new MongoHelper<ContractHistory>(); }
 

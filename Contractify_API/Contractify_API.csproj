@@ -155,6 +155,8 @@
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\ContractController.cs" />
     <Compile Include="Controllers\ContractHistoryController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\SalesRepController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="Controllers\TermsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -162,15 +164,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountDetail.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\ContactPerson.cs" />
     <Compile Include="Models\Contract.cs" />
     <Compile Include="Models\ContractHistory.cs" />
+    <Compile Include="Models\Login.cs" />
     <Compile Include="Models\MongoHelper.cs" />
     <Compile Include="Models\ServiceMaster.cs" />
     <Compile Include="Models\Terms.cs" />
-    <Compile Include="Models\Users.cs" />
+    <Compile Include="Models\SalesRep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -18,6 +18,8 @@ namespace Contractify_API.Models
         public string CompanyId { get; set; }
         public string ContractStatus { get; set; } // proposal,agreement,contract,closed
         public string ClientId { get; set; }
+        public string SalesRepId { get; set; }
+        public string SalesRepName { get; set; }
         public string CompanyName { get; set; }
         public string ContactPerson { get; set; }
         public string ContactEmail { get; set; }
@@ -27,8 +29,9 @@ namespace Contractify_API.Models
         public string ContractEndDate { get; set; }
         public string ContractDescription { get; set; }
         public string ContractPdfPath { get; set; }
-        public string CreatedDate { get; set; }
-        public string UpdatedDate { get; set; }
+        public string Amount { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public List<ServiceMaster> ContractScope { get; set; }
         public List<Terms> ContractTerms { get; set; }
 
@@ -70,7 +73,7 @@ namespace Contractify_API.Models
            
             contract.CompanyName = client.CompanyName;
            
-            contract.CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
+            contract.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
             var result = _contract.Collection.Save(contract);
             string affected = result.LastErrorMessage;
             if (result.DocumentsAffected > 0 || result.Ok)
@@ -80,7 +83,7 @@ namespace Contractify_API.Models
                     CompanyId = contract.CompanyId,
                     Contract = contract,
                     Action = "Created",
-                    CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")
+                    CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))
                 };
                 history.Save(history);
                 isAdded = true;
@@ -110,7 +113,7 @@ namespace Contractify_API.Models
             }
             Contract oContract = GetContractById(contract.ContractId);
             contract.CreatedDate = oContract.CreatedDate;
-            contract.UpdatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
+            contract.UpdatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
             var query = Query<Contract>.EQ(x => x.ContractId, contract.ContractId);
             var replacement = Update<Contract>.Replace(contract);
 
@@ -123,7 +126,7 @@ namespace Contractify_API.Models
                     CompanyId = contract.CompanyId,
                     Contract = contract,
                     Action = "Updated",
-                    CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")
+                    CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))
                 };
                 history.Save(history);
                 isUpdated = true;
@@ -148,7 +151,7 @@ namespace Contractify_API.Models
                     CompanyId = contract.CompanyId,
                     Contract = contract,
                     Action = "Deleted",
-                    CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")
+                    CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))
                 };
                 history.Save(history);
                 isDeleted = true;
@@ -181,7 +184,7 @@ namespace Contractify_API.Models
             var query = Query<Contract>.EQ(x => x.ContractId, contractId);
 
             var updateQuery = Update<Contract>.Combine(Update<Contract>.Set(x => x.ContractStatus, "Closed"),
-                Update<Contract>.Set(x => x.UpdatedDate, DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")));
+                Update<Contract>.Set(x => x.UpdatedDate, Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))));
 
             var result = _contract.Collection.Update(query, updateQuery);
 
@@ -193,7 +196,7 @@ namespace Contractify_API.Models
                     CompanyId = contract.CompanyId,
                     Contract = contract,
                     Action = "Updated",
-                    CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")
+                    CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))
                 };
                 history.Save(history);
                 isClosed = true;
@@ -213,6 +216,17 @@ namespace Contractify_API.Models
                 isUpdated = true;
             }
             return isUpdated;
+        }
+
+        public List<Contract> GetContractsByYearQtr(Contract contract)
+        {
+            var query = Query.And(Query<Contract>.GTE(x => x.CreatedDate, Convert.ToDateTime(contract.ContractStartDate)),
+                Query<Contract>.LTE(x=>x.CreatedDate,Convert.ToDateTime(contract.ContractEndDate)),
+                Query<Contract>.EQ(x => x.CompanyId,contract.CompanyId));
+
+            var fields = new FieldsBuilder<Contract>().Exclude(x => x.ContractScope).Exclude(x => x.ContractTerms);
+
+            return _contract.Collection.Find(query).SetFields(fields).ToList();
         }
         
     }

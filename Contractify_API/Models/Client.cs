@@ -28,9 +28,10 @@ namespace Contractify_API.Models
         public string OfficeAddress { get; set; }
         public string PaymentTerm { get; set; }
         public string Logo { get; set; }
-        public string CreatedDate { get; set; }
-        public string UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public List<ContactPerson> ContactPersons { get; set; }
+        public AccountDetail AccountDetail { get; set; }
 
         public Client()
         {
@@ -41,7 +42,7 @@ namespace Contractify_API.Models
         {
             if (!IsClientExist(client.Email))
             {
-                client.CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
+                client.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
                 _client.Collection.Save(client);
                 return "Company Created";
             }
@@ -84,7 +85,7 @@ namespace Contractify_API.Models
             bool isUpdated = false;
             var query = Query<Client>.EQ(x => x.ClientId, client.ClientId);
             Client oldClient = GetClientById(client.ClientId.ToString());
-
+            client.AccountDetail.CompanyId = oldClient.CompanyId;
             if (client.ContactPersons != null)
             {
                 foreach (var cPerson in client.ContactPersons)
@@ -110,9 +111,10 @@ namespace Contractify_API.Models
                 OfficeAddress = client.OfficeAddress,
                 Logo = oldClient.Logo,
                 PaymentTerm = client.PaymentTerm,
+                AccountDetail = client.AccountDetail,
                 ContactPersons = oldClient.ContactPersons,
                 CreatedDate = oldClient.CreatedDate,
-                UpdatedDate = System.DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")
+                UpdatedDate = Convert.ToDateTime(System.DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))
             };
 
             var replacement = Update<Client>.Replace(company);

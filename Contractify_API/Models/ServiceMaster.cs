@@ -21,6 +21,8 @@ namespace Contractify_API.Models
         public string ParentId { get; set; }
         public string ShortDescription { get; set; }
         public string Notes { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public ServiceMaster()
         {
@@ -48,6 +50,7 @@ namespace Contractify_API.Models
         {
             try
             {
+                service.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
                 if (!IsServiceExist(service.Name))
                 {
                     _service.Collection.Save(service);
@@ -128,6 +131,7 @@ namespace Contractify_API.Models
         public bool UpdateService(ServiceMaster service)
         {
             bool isUpdated = false;
+            service.UpdatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
 
             var query = Query.And(Query<ServiceMaster>.EQ(x => x.CompanyId, service.CompanyId),
                                   Query<ServiceMaster>.EQ(x => x.ServiceId, service.ServiceId),

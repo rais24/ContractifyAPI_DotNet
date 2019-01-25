@@ -58,5 +58,12 @@ namespace Contractify_API.Controllers
         {
             return Ok(new Contract().UpdateContractPdf(contract));
         }
+
+        [HttpPost]
+        [Route("api/contract/withinrange")]
+        public IHttpActionResult GetContractWithInRange(Contract contract)
+        {
+            return Ok(new Contract().GetContractsByYearQtr(contract));
+        }
     }
 }

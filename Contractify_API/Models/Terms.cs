@@ -19,8 +19,8 @@ namespace Contractify_API.Models
         public string Description { get; set; }
         [BsonRepresentation(BsonType.Boolean)]
         public bool Status { get; set; }
-        public string CreatedDate { get; set; }
-        public string UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public Terms()
         {
@@ -30,7 +30,7 @@ namespace Contractify_API.Models
         public bool Create(Terms terms)
         {
             bool isCreated = false;
-            terms.CreatedDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt");
+            terms.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
             var result = _terms.Collection.Save(terms);
 
             if (result.DocumentsAffected > 0)
@@ -64,7 +64,7 @@ namespace Contractify_API.Models
             var replacement = Update<Terms>.Combine(Update<Terms>.Set(x => x.Type, terms.Type),
                             Update<Terms>.Set(x => x.Description, terms.Description),
                             Update<Terms>.Set(x => x.Status, terms.Status),
-                            Update<Terms>.Set(x => x.UpdatedDate, DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt")));
+                            Update<Terms>.Set(x => x.UpdatedDate, Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))));
 
             var result = _terms.Collection.Update(query, replacement);
 

@@ -30,7 +30,9 @@ namespace Contractify_API.Models
         public string OfficeAddress { get; set; }
         public string Logo { get; set; }
         public string Password { get; set; }
-
+        public AccountDetail AccountDetail { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public Company()
         {
@@ -39,14 +41,15 @@ namespace Contractify_API.Models
 
         public string Create(Company company)
         {
-            if (!IsUserExist(company.Email))
+            company.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
+            if (!IsUserExist(company.Email, true))
             {
                 _company.Collection.Save(company);
                 return "User Created";
             }
             else
             {
-                return "User Already Exists"; 
+                return "User Already Exists";
             }
         }
 
@@ -55,7 +58,7 @@ namespace Contractify_API.Models
            return _company.Collection.FindAll().ToList();
         }
 
-        public bool IsUserExist(string email)
+        public bool IsUserExist(string email,bool check)
         {
             var query = Query<Company>.EQ(x => x.Email, email);
             var company = _company.Collection.FindOne(query);
@@ -64,11 +67,16 @@ namespace Contractify_API.Models
             {
                 return true;
             }
+            else
+            {
+                if (check)
+                    return new SalesRep().IsUserExist(email, false);
+            }
 
             return false;
         }
 
-        public Company ValidateLogin(Company company)
+        public Company ValidateLogin(Login company)
         {
             var query = Query.And(
                 Query<Company>.EQ(x => x.Email, company.Email),
@@ -88,8 +96,8 @@ namespace Contractify_API.Models
             bool isUpdated = false;
             var query = Query<Company>.EQ(x => x.CompanyId, newCompany.CompanyId);
             Company oldCompany = GetCompanyById(newCompany.CompanyId.ToString());
-
-            if (string.IsNullOrEmpty(newCompany.Password))
+            newCompany.AccountDetail.CompanyId = newCompany.CompanyId;
+            if (string.IsNullOrWhiteSpace(newCompany.Password))
             {
                 newCompany.Password = oldCompany.Password;
             }
@@ -108,7 +116,9 @@ namespace Contractify_API.Models
                 Email = newCompany.Email,
                 OfficeAddress = newCompany.OfficeAddress,
                 Logo = oldCompany.Logo,
-                Password = newCompany.Password
+                AccountDetail = newCompany.AccountDetail,
+                Password = newCompany.Password,
+                UpdatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"))
             };
 
             var replacement = Update<Company>.Replace(company);
