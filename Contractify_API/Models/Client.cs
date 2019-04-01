@@ -40,7 +40,7 @@ namespace Contractify_API.Models
 
         public string Create(Client client)
         {
-            if (!IsClientExist(client.Email))
+            if (!IsClientExist(client.CompanyId,client.Email))
             {
                 client.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
                 _client.Collection.Save(client);
@@ -53,9 +53,10 @@ namespace Contractify_API.Models
         }
 
     
-        public bool IsClientExist(string email)
+        public bool IsClientExist(string companyId,string email)
         {
-            var query = Query<Client>.EQ(x => x.Email, email);
+            var query = Query.And(Query<Client>.EQ(x => x.Email, email),
+                Query<Client>.EQ(x => x.CompanyId, companyId));
             var client = _client.Collection.FindOne(query);
 
             if (client != null)

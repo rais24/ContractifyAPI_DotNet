@@ -31,7 +31,7 @@ namespace Contractify_API.Models
             user.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
             string msg = "SalesRep Already Exist";
 
-            if (!IsUserExist(user.Email, true))
+            if (!IsUserExist(email:user.Email, check:true, companyId: user.CompanyId))
             {
                 var result = _user.Collection.Save(user);
 
@@ -52,9 +52,10 @@ namespace Contractify_API.Models
             return msg;
         }
 
-        public bool IsUserExist(string email, bool check)
+        public bool IsUserExist(string email, bool check, string companyId = null)
         {
-            var query = Query<SalesRep>.EQ(x => x.Email, email);
+            var query = Query.And(Query<SalesRep>.EQ(x => x.Email, email),
+                Query<SalesRep>.EQ(x => x.CompanyId, companyId));
 
             var result = _user.Collection.FindOne(query);
 

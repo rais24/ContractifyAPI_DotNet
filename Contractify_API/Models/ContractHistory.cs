@@ -40,6 +40,7 @@ namespace Contractify_API.Models
                 .Include(x => x.HistoryId)
                 .Include(x => x.Contract.CompanyName)
                 .Include(x => x.Contract.ContactPerson)
+                .Include(x => x.Contract.ContractId)
                 .Include(x => x.Contract.ContractDescription)
                 .Include(x => x.Action)
                 .Include(x => x.CreatedDate);

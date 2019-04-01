@@ -51,7 +51,7 @@ namespace Contractify_API.Models
             try
             {
                 service.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
-                if (!IsServiceExist(service.Name))
+                if (!IsServiceExist(service.CompanyId,service.Name))
                 {
                     _service.Collection.Save(service);
                     return "Service Created";
@@ -67,9 +67,10 @@ namespace Contractify_API.Models
             }
         }
 
-        public bool IsServiceExist(string serviceName)
+        public bool IsServiceExist(string companyId,string serviceName)
         {
-            var query = Query<ServiceMaster>.EQ(x => x.Name, serviceName);
+            var query = Query.And(Query<ServiceMaster>.EQ(x => x.Name, serviceName),
+                Query<ServiceMaster>.EQ(x => x.CompanyId, companyId));
             var service = _service.Collection.FindOne(query);
 
             if (service != null)

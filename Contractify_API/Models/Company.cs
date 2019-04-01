@@ -42,6 +42,7 @@ namespace Contractify_API.Models
         public string Create(Company company)
         {
             company.CreatedDate = Convert.ToDateTime(DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm tt"));
+
             if (!IsUserExist(company.Email, true))
             {
                 _company.Collection.Save(company);
@@ -70,7 +71,7 @@ namespace Contractify_API.Models
             else
             {
                 if (check)
-                    return new SalesRep().IsUserExist(email, false);
+                    return new SalesRep().IsUserExist(email : email, check : false);
             }
 
             return false;
