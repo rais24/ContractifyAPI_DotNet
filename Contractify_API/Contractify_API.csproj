@@ -156,6 +156,7 @@
     <Compile Include="Controllers\ContractController.cs" />
     <Compile Include="Controllers\ContractHistoryController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PDFSettingsController.cs" />
     <Compile Include="Controllers\SalesRepController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="Controllers\TermsController.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Models\ContractHistory.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\MongoHelper.cs" />
+    <Compile Include="Models\PdfSettings.cs" />
     <Compile Include="Models\ServiceMaster.cs" />
     <Compile Include="Models\Terms.cs" />
     <Compile Include="Models\SalesRep.cs" />
@@ -180,6 +182,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\QA.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
